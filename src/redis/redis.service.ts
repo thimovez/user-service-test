@@ -10,11 +10,27 @@ export class RedisService {
     this.setRandomString(10)
       .then(() => console.log('Random records generated successfully.'))
       .catch((error) => console.log('Error generating random records:', error))
-      .finally(() => this.client.disconnect());
   }
 
   getRedisClient(): Redis {
     return this.client;
+  }
+
+  async getRecords() {
+    const client = this.client;
+    const keys = await client.keys('*');
+    const pipeline = client.pipeline();
+
+    keys.forEach((key) => pipeline.get(key));
+
+    const results = await pipeline.exec();
+
+    const res = [];
+    results.map((value) => {
+      res.push(value[1]);
+    });
+
+    return res;
   }
 
   private generateRandomString(length: number): string {
