@@ -4,7 +4,6 @@ import Redis from 'ioredis';
 @Injectable()
 export class RedisService {
   private readonly client: Redis;
-  private numRecord;
 
   constructor() {
     this.client = new Redis();
@@ -43,7 +42,7 @@ export class RedisService {
         if (err) {
           console.error(`Error storing ${key}: ${err}`);
         } else {
-          console.log(`Stored ${key} with value ${value}`);
+          console.log(`Stored ${key} with value ${value} and reply ${reply}`);
         }
       });
     }
