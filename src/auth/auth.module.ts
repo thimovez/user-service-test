@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { UserModule } from 'src/user/user.module';
       signOptions: { expiresIn: '1h' },
     }),
     UserModule,
+    RedisModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],
