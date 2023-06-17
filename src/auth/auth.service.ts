@@ -24,6 +24,9 @@ export class AuthService {
     const token = this.generateToken(user);
     const records = await this.redisService.getRecords();
 
+    const client = this.redisService.getRedisClient();
+    client.disconnect();
+
     return {
       token,
       records,
