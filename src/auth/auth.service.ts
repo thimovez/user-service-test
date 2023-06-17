@@ -7,20 +7,27 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { UserDocument } from 'src/user/schemas/user.schema';
+import { UserDocument } from '../user/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private redisService: RedisService,
   ) {}
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
+    const token = this.generateToken(user);
+    const records = await this.redisService.getRecords();
 
-    return this.generateToken(user);
+    return {
+      token,
+      records,
+    };
   }
 
   async registration(userDto: CreateUserDto) {
@@ -44,7 +51,7 @@ export class AuthService {
     };
   }
 
-  private async generateToken(user: UserDocument) {
+  private generateToken(user: UserDocument) {
     const payload = {
       email: user.email,
     };
